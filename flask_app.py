@@ -47,13 +47,17 @@ def dashboard_rt():
 def dashboard_id(id: id):
     csvfile_path = config.cfg["ledgers_path"] + '/' + id 
     df1 = pd.read_csv(csvfile_path, encoding='utf-8')
-    df2 = gonance.normalize_df(df1)
-    df3 = gonance.pivot_by_period(df2, 'product', period='quarter')
+    df2 = gonance.normalize_ledger_df(df1)
+    investment_df = gonance.investment_by_period(df2, 'product', period='quarter')
+    value_df = gonance.value_by_period(df2, 'product', period='quarter')
+
+    df4 = value_df.join(investment_df, lsuffix='_value', rsuffix='_investment')
+    df5 = gonance.enhance_historical(df4)
 
     #columns_included = df1.columns.values
     return render_template('dashboard.html',
-        tables=[df3.to_html(classes=['table-striped', 'table-gonance-default'], table_id='ledger-table')], 
-        titles=df3.columns.values)
+        tables=[df5.to_html(classes=['table-striped', 'table-gonance-default'], table_id='ledger-table')], 
+        titles=df5.columns.values)
 
 @app.route('/dashboard/<id>/raw')
 def dashboard_id_raw(id: id):
