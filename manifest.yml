@@ -1,0 +1,7 @@
+---
+applications:
+ - name: gonance
+   random-route: true
+   buildpack: python_buildpack
+   command: python flask_app.py
+   memory: 128M

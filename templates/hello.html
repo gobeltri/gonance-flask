@@ -1,0 +1,35 @@
+{% extends "layout.html" %}
+{% block title %}Welcome{% endblock %}
+{% block head %}
+  {{ super() }}
+  <style type="text/css">
+    .important { color: #336699; }
+  </style>
+{% endblock %}
+{% block content %}
+	<div class="container">
+		<h1>Gonance</h1>
+		<div class="row">
+			<ul>
+				<li><a href="/dashboard_rt">Real Time</a></li>
+				{% for csv in ledger_csvfiles %}
+				{% set link = '/dashboard/' + csv %}
+				{% set link_raw = '/dashboard/' + csv + '/raw' %}				
+				<li> 
+					<a href="{{ link }}">{{ csv }}</a><a href="{{ link_raw }}"> (RAW)</a>
+				</li>
+				{% endfor %}
+			</ul>
+		</div>
+
+		<h2>CSV Explorer</h2>
+			<form action="/csvexplorer" enctype="multipart/form-data" method="POST">
+			  <div class="custom-file">
+			    <input type="file" class="custom-file-input" id="validatedCustomFile" name="csvfile" required>
+			    <label class="custom-file-label" for="validatedCustomFile">.csv</label>
+			  </div>
+			  <button type="submit" class="btn btn-primary">Explore</button>
+			</form>
+
+	</div>
+{% endblock %}
