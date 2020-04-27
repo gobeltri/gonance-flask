@@ -38,15 +38,21 @@ def hello():
 
     return render_template('hello.html', ledger_csvfiles=ledger_csvfiles)
 
+@app.route('/assets')
+def assets():
 
-@app.route('/dashboard_rt')
-def dashboard_rt():
-    return render_template('dashboard.html')
+    id = request.args.get('id')
+    type = request.args.get('type')
 
-@app.route('/dashboard/<id>')
-def dashboard_id(id: id):
-    csvfile_path = config.cfg["ledgers_path"] + '/' + id 
+    csvfile_path = config.cfg["ledgers_path"] + '/' + id
     df1 = pd.read_csv(csvfile_path, encoding='utf-8')
+
+    if type == 'raw':
+        columns_included = df1.columns.values
+        return render_template('dashboard.html', csvfile_path=csvfile_path,
+            tables=[df1[columns_included].to_html(classes=['table-striped', 'table-gonance-default'], table_id='ledger-table')], 
+            titles=df1[columns_included].columns.values)
+
     df2 = gonance.normalize_ledger_df(df1)
 
     investment_df = gonance.figure_by_group_and_period(
@@ -73,14 +79,10 @@ def dashboard_id(id: id):
         tables=[df5[columns_included].to_html(classes=['table-gonance-default'], table_id='ledger-table')], 
         titles=df5.columns.values)
 
-@app.route('/dashboard/<id>/raw')
-def dashboard_id_raw(id: id):
-    csvfile_path = config.cfg["ledgers_path"] + '/' + id 
-    df = pd.read_csv(csvfile_path, encoding='utf-8')
-    columns_included = df.columns.values
-    return render_template('dashboard.html', csvfile_path=csvfile_path,
-        tables=[df[columns_included].to_html(classes=['table-striped', 'table-gonance-default'], table_id='ledger-table')], 
-        titles=df[columns_included].columns.values)
+@app.route('/dashboard')
+def dashboard_rt():
+    return render_template('dashboard.html')
+
 
 @app.route('/csvexplorer', methods = ['POST', 'GET'])
 def csvexplorer():

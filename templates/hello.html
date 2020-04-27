@@ -11,12 +11,12 @@
 		<h1>Gonance</h1>
 		<div class="row">
 			<ul>
-				<li><a href="/dashboard_rt">Real Time</a></li>
+				<li><a href="/dashboard">Real Time</a></li>
 				{% for csv in ledger_csvfiles %}
-				{% set link = '/dashboard/' + csv %}
-				{% set link_raw = '/dashboard/' + csv + '/raw' %}				
+				{% set link_assets = '/assets?id=' + csv %}
+				{% set link_raw = '/assets?id=' + csv + '&type=raw' %}				
 				<li> 
-					<a href="{{ link }}">{{ csv }}</a><a href="{{ link_raw }}"> (RAW)</a>
+					{{ csv }}<a href="{{ link_assets }}"> (assets)</a><a href="{{ link_raw }}"> (raw)</a>
 				</li>
 				{% endfor %}
 			</ul>
