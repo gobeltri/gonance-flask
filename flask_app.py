@@ -54,10 +54,14 @@ def dashboard_id(id: id):
     df4 = value_df.join(investment_df, lsuffix='_value', rsuffix='_investment')
     df5 = gonance.enhance_historical(df4)
 
-    #columns_included = df1.columns.values
+    df6 = gonance.format_historical(df5)
+
+    columns_included = df6.columns
+    columns_included = ['Product', 'Allocation', '20Q2_value', 'Total Investment', 'Delta Last-Y', 'Delta Last-Q', 'Returns', 'Returns %']
+
     return render_template('dashboard.html',
-        tables=[df5.to_html(classes=['table-striped', 'table-gonance-default'], table_id='ledger-table')], 
-        titles=df5.columns.values)
+        tables=[df6[columns_included].to_html(classes=['table-gonance-default'], table_id='ledger-table')], 
+        titles=df6.columns.values)
 
 @app.route('/dashboard/<id>/raw')
 def dashboard_id_raw(id: id):
