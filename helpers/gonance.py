@@ -13,34 +13,26 @@ def normalize_ledger_df(df: pd.DataFrame) -> pd.DataFrame:
 	df_out['Month'] = df_out['Date'].dt.month
 	return (df_out)
 
-def investment_by_period(df:pd.DataFrame, index:str, period:str) -> pd.DataFrame:
+
+def figure_by_group_and_period(df:pd.DataFrame, figure:str, group:str, period:str) -> pd.DataFrame:
+
+	"""
+	figures_accepted = ['Investment Gross', 'Shares', 'Fees', 'Tax', 'Investment Netto', 'Value']
+	groups_accepted = ['Category #1', 'Category #2', 'Broker', 'Market', 'Product']
+	periods_accepted = ['Year', 'Quarter']
+	"""
+
 	df_out = df
-	if period == 'year':
-		df_out = df_out.pivot_table(index='Product', columns='Year', 
-			values='Investment Gross', aggfunc='sum')
-		return df_out
-	if period == 'quarter':
-		df_out = df_out.pivot_table(index='Product', columns=['Quarter'], 
-			values='Investment Gross', aggfunc='sum')
+
+	df_out = df_out.pivot_table(index=group, columns=period, 
+		values=figure, aggfunc='sum')
+
+	if figure == 'Investment Gross':
 		df_out['Total Investment'] = df_out.sum(axis=1)
-		return df_out
 
-	else:
-		return None
+	return df_out
 
-def value_by_period(df:pd.DataFrame, index:str, period:str) -> pd.DataFrame:
-	df_out = df
-	if period == 'year':
-		df_out = df_out.pivot_table(index='Product', columns='Year', 
-			values='Value', aggfunc='sum')
-		return df_out
-	if period == 'quarter':
-		df_out = df_out.pivot_table(index='Product', columns=['Quarter'], 
-			values='Value', aggfunc='sum')
-		return df_out
 
-	else:
-		return None
 
 def enhance_historical(df:pd.DataFrame) -> pd.DataFrame:
 	df_out = df

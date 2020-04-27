@@ -48,20 +48,30 @@ def dashboard_id(id: id):
     csvfile_path = config.cfg["ledgers_path"] + '/' + id 
     df1 = pd.read_csv(csvfile_path, encoding='utf-8')
     df2 = gonance.normalize_ledger_df(df1)
-    investment_df = gonance.investment_by_period(df2, 'product', period='quarter')
-    value_df = gonance.value_by_period(df2, 'product', period='quarter')
+
+    investment_df = gonance.figure_by_group_and_period(
+        df=df2,
+        figure='Investment Gross',
+        group='Product',
+        period='Quarter')
+
+    value_df = gonance.figure_by_group_and_period(
+        df=df2,
+        figure='Value',
+        group='Product',
+        period='Quarter')
 
     df4 = value_df.join(investment_df, lsuffix='_value', rsuffix='_investment')
     df5 = gonance.enhance_historical(df4)
 
     df6 = gonance.format_historical(df5)
 
-    columns_included = df6.columns
+    columns_included = df4.columns
     columns_included = ['Product', 'Allocation', '20Q2_value', 'Total Investment', 'Delta Last-Y', 'Delta Last-Q', 'Returns', 'Returns %']
 
     return render_template('dashboard.html',
-        tables=[df6[columns_included].to_html(classes=['table-gonance-default'], table_id='ledger-table')], 
-        titles=df6.columns.values)
+        tables=[df5[columns_included].to_html(classes=['table-gonance-default'], table_id='ledger-table')], 
+        titles=df5.columns.values)
 
 @app.route('/dashboard/<id>/raw')
 def dashboard_id_raw(id: id):
